@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.Duration.Companion.hours
 
 
 class MainActivity : AppCompatActivity(){
@@ -94,10 +95,17 @@ class MainActivity : AppCompatActivity(){
         var spotCount = 0
         var fullyCharged = false
         var temp =dataList[0]
-
+        dataList.drop(0)
         var elapsedTime: Long = 0
         val dateFormat =  SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
         var timeOfFullCharge: Long = 0
+        if (temp.batteryLevel!! == 100f && temp.charging)
+        {
+            fullyCharged = true
+            timeOfFullCharge =  dateFormat.parse(temp.timestamp).time
+        }
+
         for(i in dataList) {
             if(!fullyCharged) {
                 if(i.batteryLevel!! == 100f && i.charging && temp.batteryLevel!! < 100f) {
@@ -175,8 +183,9 @@ class MainActivity : AppCompatActivity(){
         var dischargeLevel = 0f
         var timeForDischarge = 0f
         var temp = dataList[0]
+        var t = temp.timestamp.substring(0,14) + "00:00"
         val dateFormat =  SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        var timeFrameStart = dateFormat.parse(initialTime).time
+        var timeFrameStart = dateFormat.parse(t).time
         val chargeCycleList: ArrayList<ChargeCycle> = arrayListOf()
 
         for(i in dataList) {
